@@ -8,7 +8,7 @@ exports[`<App /> should render and match the snapshot 1`] = `
     encodeSpecialCharacters={true}
     htmlAttributes={
       Object {
-        "lang": "en-US",
+        "lang": undefined,
       }
     }
     prioritizeSeoTags={false}
@@ -27,6 +27,10 @@ exports[`<App /> should render and match the snapshot 1`] = `
     <Route
       element={<Unknown />}
       path="*"
+    />
+    <Route
+      element={<Memo />}
+      path="/cart"
     />
   </Routes>
   <Memo(l) />

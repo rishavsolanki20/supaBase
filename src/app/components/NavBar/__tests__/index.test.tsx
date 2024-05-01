@@ -1,13 +1,22 @@
 import * as React from 'react';
-import { createRenderer } from 'react-test-renderer/shallow';
-import { NavBar } from '../index';
+import { render } from '@testing-library/react';
 
-const shallowRenderer = createRenderer();
+import { Navbar } from '..';
 
-describe('<NavBar />', () => {
+jest.mock('react-i18next', () => ({
+  useTranslation: () => {
+    return {
+      t: str => str,
+      i18n: {
+        changeLanguage: () => new Promise(() => {}),
+      },
+    };
+  },
+}));
+
+describe('<Navbar  />', () => {
   it('should match snapshot', () => {
-    shallowRenderer.render(<NavBar />);
-    const renderedOutput = shallowRenderer.getRenderOutput();
-    expect(renderedOutput).toMatchSnapshot();
+    const loadingIndicator = render(<Navbar />);
+    expect(loadingIndicator.container.firstChild).toMatchSnapshot();
   });
 });

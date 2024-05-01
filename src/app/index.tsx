@@ -13,8 +13,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { GlobalStyle } from 'styles/global-styles';
 
 import { HomePage } from './pages/HomePage/Loadable';
-import { NotFoundPage } from './pages/NotFoundPage/Loadable';
+import { NotFoundPage } from './components/NotFoundPage/Loadable';
 import { useTranslation } from 'react-i18next';
+import { Provider } from 'react-redux';
+import { Cart } from './pages/Cart';
+import { Login } from './pages/Login/Loadable';
+import { Signin } from './pages/Signin/Loadable';
+import { Viewcart } from './components/Viewcart';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -31,6 +36,10 @@ export function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="*" element={<NotFoundPage />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/signup" element={<Login />} />
+        <Route path="/login" element={<Signin />} />
+        <Route path="/viewCart" element={<Viewcart />} />
       </Routes>
       <GlobalStyle />
     </BrowserRouter>
