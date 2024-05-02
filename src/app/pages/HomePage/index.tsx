@@ -50,7 +50,7 @@ export function HomePage() {
           .then(response => response.json())
           .then(data => {
             console.log(data);
-            setData(data.data); // Update the state with the fetched data
+            setData(data.data);
           })
           .catch(error => console.error(error));
       } catch (error) {
