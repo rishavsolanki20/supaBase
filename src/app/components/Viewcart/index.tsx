@@ -11,6 +11,7 @@ interface CartItem {
   id: string;
   name: string;
   price: number;
+  user_id: string; // Add user_id to CartItem interface
 }
 
 export const Viewcart = memo((props: Props) => {
@@ -22,12 +23,25 @@ export const Viewcart = memo((props: Props) => {
   }, []);
 
   const fetchCartItems = async () => {
-    let { data: items, error } = await supabase.from('cart').select('*');
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-    if (error) {
-      console.log('Error fetching cart items: ', error);
-    } else {
-      setCartItems(items as CartItem[]);
+      const { data: items, error } = await supabase
+        .from('cart')
+        .select('*')
+        .eq('user_id', user?.id);
+
+      if (error) {
+        console.log('Error fetching cart items: ', error);
+      } else {
+        setCartItems(
+          items.map(item => ({ ...item, user_id: item.user_id })) as CartItem[],
+        ); // Add user_id to each item
+      }
+    } catch (error) {
+      console.error('Error fetching cart items: ', error);
     }
   };
 
