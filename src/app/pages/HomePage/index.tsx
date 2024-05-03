@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from 'app/supabaseClient';
@@ -17,64 +18,62 @@ interface CartItem {
 
 export function HomePage() {
   const [data, setData] = React.useState<CartItem[]>([]);
-  const [cart, setCart] = React.useState<CartItem[]>([]);
+  const [loading, setLoading] = React.useState<boolean>(true);
 
   React.useEffect(() => {
-    async function fetchData() {
-      try {
-        const authToken = await supabase.auth.getSession();
-        fetch('http://localhost:8000/', {
-          headers: {
-            accept: '*/*',
-            'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
-            apikey:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0dmZzYXBzYXBqamNiaG1semF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQxMDQyNTcsImV4cCI6MjAyOTY4MDI1N30.hNB9uq2ubt2T8ILoyvfhNMgBlhoZDk8R58ewZdffKhA',
-            Authorization: `Bearer ${authToken.data.session?.access_token}`,
-            priority: 'u=1, i',
-            'sec-ch-ua':
-              '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"macOS"',
-            'sec-fetch-dest': 'empty',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-site': 'cross-site',
-            'x-client-info': 'supabase-js-web/2.43.0',
-          },
-          referrer: 'http://localhost:3000/',
-          referrerPolicy: 'strict-origin-when-cross-origin',
-          body: null,
-          method: 'POST',
-          mode: 'cors',
-          credentials: 'omit',
-        })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data);
-            setData(data.data);
-          })
-          .catch(error => console.error(error));
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
     fetchData();
   }, []);
 
-  const handleAddToCart = async (item: CartItem) => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  const fetchData = async () => {
+    try {
+      const authToken = await supabase.auth.getSession();
+      const response = await fetch(
+        'https://vlhilrmgqjuxaibhwave.supabase.co/functions/v1/hello-world',
+        {
+          headers: {
+            apikey:
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0dmZzYXBzYXBqamNiaG1semF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQxMDQyNTcsImV4cCI6MjAyOTY4MDI1N30.hNB9uq2ubt2T8ILoyvfhNMgBlhoZDk8R58ewZdffKhA',
+            Authorization: `Bearer ${authToken.data.session?.access_token}`,
+          },
+        },
+      );
+      if (response.ok) {
+        const responseData = await response.json();
+        setData(responseData.items);
+      } else {
+        console.error('Failed to fetch data:', response.statusText);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setLoading(false);
+    }
+  };
 
-    const user_id = user?.id;
-    const { error } = await supabase.from('cart').insert([
-      {
-        user_id,
-        name: item.name,
-        price: item.price,
-      },
-    ]);
-    console.log(error);
+  const handleAddToCart = async (item: CartItem) => {
+    try {
+      const authToken = await supabase.auth.getSession();
+      const response = await fetch(
+        'https://vlhilrmgqjuxaibhwave.supabase.co/functions/v1/test',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken.data.session?.access_token}`,
+          },
+          body: JSON.stringify(item),
+        },
+      );
+      if (response.ok) {
+        console.log('Item added to cart successfully!');
+        console.log(item);
+        // Optionally update the cart state here
+      } else {
+        console.error('Failed to add item to cart');
+      }
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+    }
   };
 
   return (
@@ -91,7 +90,7 @@ export function HomePage() {
           justifyContent: 'space-around',
         }}
       >
-        {data.map(item => (
+        {data?.map(item => (
           <Card key={item.id} sx={{ maxWidth: 345, margin: 2 }}>
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
