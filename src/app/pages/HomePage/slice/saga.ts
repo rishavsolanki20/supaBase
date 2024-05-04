@@ -22,9 +22,8 @@ function* fetchDataSaga() {
     console.log("Auth token:", authToken);
 
     const response = yield call(
-      axios.post,
+      axios.get,
       `${process.env.REACT_APP_API_URL}/items`,
-      null,
       {
         headers: {
           apikey: `${process.env.REACT_APP_API_KEY}`,
