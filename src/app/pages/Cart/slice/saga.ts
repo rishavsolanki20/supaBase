@@ -10,7 +10,6 @@ function* addItem(action) {
     const authToken = yield call([supabase.auth, "getSession"]);
     const user_id = authToken?.id;
 
-    // Make a POST request to your backend using Axios
     const response = yield call(
       axios.post,
       `${process.env.REACT_APP_API_URL}/items`,
