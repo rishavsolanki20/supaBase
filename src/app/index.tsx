@@ -11,7 +11,6 @@ import { Helmet } from 'react-helmet-async';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { GlobalStyle } from 'styles/global-styles';
-
 import { HomePage } from './pages/HomePage/Loadable';
 import { NotFoundPage } from './components/NotFoundPage/Loadable';
 import { useTranslation } from 'react-i18next';
@@ -20,28 +19,33 @@ import { Cart } from './pages/Cart';
 import { Login } from './pages/Login/Loadable';
 import { Signin } from './pages/Signin/Loadable';
 import { Viewcart } from './components/Viewcart';
+import { slice } from './pages/Cart/slice';
+import { store } from './pages/store';
 
 export function App() {
   const { i18n } = useTranslation();
   return (
-    <BrowserRouter>
-      <Helmet
-        titleTemplate="%s - React Boilerplate"
-        defaultTitle="React Boilerplate"
-        htmlAttributes={{ lang: i18n.language }}
-      >
-        <meta name="description" content="A React Boilerplate application" />
-      </Helmet>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Helmet
+          titleTemplate="%s - React Boilerplate"
+          defaultTitle="React Boilerplate"
+          htmlAttributes={{ lang: i18n.language }}
+        >
+          <meta name="description" content="A React Boilerplate application" />
+        </Helmet>
 
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="*" element={<NotFoundPage />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/signup" element={<Login />} />
-        <Route path="/login" element={<Signin />} />
-        <Route path="/viewCart" element={<Viewcart />} />
-      </Routes>
-      <GlobalStyle />
-    </BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+
+          <Route path="*" element={<NotFoundPage />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/signup" element={<Login />} />
+          <Route path="/login" element={<Signin />} />
+          <Route path="/viewCart" element={<Viewcart />} />
+        </Routes>
+        <GlobalStyle />
+      </BrowserRouter>
+    </Provider>
   );
 }

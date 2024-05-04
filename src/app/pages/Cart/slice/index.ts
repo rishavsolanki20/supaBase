@@ -1,17 +1,18 @@
-import { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from 'utils/@reduxjs/toolkit';
-import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
-import { cartSaga } from './saga';
-import { CartState } from './types';
+/* eslint-disable prettier/prettier */
+import { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "utils/@reduxjs/toolkit";
+import { useInjectReducer, useInjectSaga } from "utils/redux-injectors";
+import { cartSaga } from "./saga";
+import { CartState } from "./types";
 
 export const initialState: CartState = {
   items: [],
-  name: '',
-  price: '',
+  name: "",
+  price: "",
 };
 
 export const slice = createSlice({
-  name: 'cart',
+  name: "cart",
   initialState,
   reducers: {
     addItem(state, action: PayloadAction<any>) {
@@ -25,6 +26,8 @@ export const slice = createSlice({
   },
 });
 
+// Destructure actions from slice.actions, not slice.reducer
+export const { addItem, setItem } = slice.actions;
 export const { actions: cartActions } = slice;
 
 export const useCartSlice = () => {

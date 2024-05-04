@@ -9,6 +9,9 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import { Navbar } from 'app/components/Navbar';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCartStart, fetchDataStart } from './slice';
+import { RootState } from 'types/RootState';
 
 interface CartItem {
   id: string;
@@ -17,63 +20,17 @@ interface CartItem {
 }
 
 export function HomePage() {
-  const [data, setData] = React.useState<CartItem[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(true);
+  const dispatch = useDispatch();
+  const data = useSelector((state: RootState) => state.homePage?.items);
+  const loading = useSelector((state: RootState) => state.homePage?.loading);
+  console.log(data);
 
   React.useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const authToken = await supabase.auth.getSession();
-      const response = await fetch(
-        'https://vlhilrmgqjuxaibhwave.supabase.co/functions/v1/hello-world',
-        {
-          headers: {
-            apikey:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0dmZzYXBzYXBqamNiaG1semF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQxMDQyNTcsImV4cCI6MjAyOTY4MDI1N30.hNB9uq2ubt2T8ILoyvfhNMgBlhoZDk8R58ewZdffKhA',
-            Authorization: `Bearer ${authToken.data.session?.access_token}`,
-          },
-        },
-      );
-      if (response.ok) {
-        const responseData = await response.json();
-        setData(responseData.items);
-      } else {
-        console.error('Failed to fetch data:', response.statusText);
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setLoading(false);
-    }
-  };
+    dispatch(fetchDataStart());
+  }, [dispatch]);
 
   const handleAddToCart = async (item: CartItem) => {
-    try {
-      const authToken = await supabase.auth.getSession();
-      const response = await fetch(
-        'https://vlhilrmgqjuxaibhwave.supabase.co/functions/v1/test',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${authToken.data.session?.access_token}`,
-          },
-          body: JSON.stringify(item),
-        },
-      );
-      if (response.ok) {
-        console.log('Item added to cart successfully!');
-        console.log(item);
-        // Optionally update the cart state here
-      } else {
-        console.error('Failed to add item to cart');
-      }
-    } catch (error) {
-      console.error('Error adding item to cart:', error);
-    }
+    dispatch(addToCartStart(item));
   };
 
   return (
