@@ -34,7 +34,7 @@ function* addItem(action) {
     }
 
     // Dispatch action to update Redux store with the newly added item
-    yield put(cartActions.addItem(action.payload));
+    yield put(addItem(action.payload));
   } catch (error) {
     console.error("Failed to add item to cart:", error);
   }
