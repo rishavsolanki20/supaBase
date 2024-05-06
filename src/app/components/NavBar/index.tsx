@@ -18,6 +18,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 
 const pages = ['View Cart'];
 const paga = ['Add Item'];
+const order = ['Order History'];
 
 const settings = ['Logout'];
 
@@ -47,8 +48,12 @@ export const Navbar = () => {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
+
   const handleCart = () => {
     navigate('/');
+  };
+  const handleOrder = () => {
+    navigate('/order');
   };
 
   const handleCloseUserMenu = () => {
@@ -142,6 +147,13 @@ export const Navbar = () => {
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             {pages.map(page => (
               <Button color="inherit" onClick={handleViewCart}>
+                {page}
+              </Button>
+            ))}
+          </Box>
+          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+            {order.map(page => (
+              <Button color="inherit" onClick={handleOrder}>
                 {page}
               </Button>
             ))}

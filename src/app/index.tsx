@@ -21,6 +21,7 @@ import { Signin } from './pages/Signin/Loadable';
 import { Viewcart } from './components/Viewcart';
 import { slice } from './pages/Cart/slice';
 import { store } from './pages/store';
+import { Order } from './pages/Order';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -43,6 +44,7 @@ export function App() {
           <Route path="/signup" element={<Login />} />
           <Route path="/login" element={<Signin />} />
           <Route path="/viewCart" element={<Viewcart />} />
+          <Route path="/order" element={<Order />} />
         </Routes>
         <GlobalStyle />
       </BrowserRouter>

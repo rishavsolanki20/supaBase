@@ -27,6 +27,7 @@ function* addItem(action) {
       },
     );
 
+    console.log(authToken);
     const data = response.data;
 
     if (response.status !== 200) {

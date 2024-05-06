@@ -27,6 +27,8 @@ export const Viewcart = memo((props: Props) => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
+      const authToken = [supabase.auth, 'getSession'];
+      // console.log(authToken.data.session?.access_token);
 
       const { data: items, error } = await supabase
         .from('cart')
@@ -38,10 +40,33 @@ export const Viewcart = memo((props: Props) => {
       } else {
         setCartItems(
           items.map(item => ({ ...item, user_id: item.user_id })) as CartItem[],
-        ); // Add user_id to each item
+        );
       }
     } catch (error) {
       console.error('Error fetching cart items: ', error);
+    }
+  };
+
+  const handleCheckout = async () => {
+    try {
+      const authToken = await supabase.auth.getSession();
+      console.log('authToken', authToken);
+      const response = await fetch('http://localhost:8800/order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken.data.session?.access_token}`,
+        },
+        body: JSON.stringify(cartItems),
+      });
+      if (!response.ok) {
+        throw new Error('Checkout failed');
+      }
+
+      alert('Checkout successful!');
+      setCartItems([]);
+    } catch (error) {
+      console.error('Error during checkout: ', error);
     }
   };
 
@@ -56,6 +81,7 @@ export const Viewcart = memo((props: Props) => {
           <p>Price: {item.price}</p>
         </div>
       ))}
+      <button onClick={handleCheckout}>Checkout</button>
     </Div>
   );
 });
